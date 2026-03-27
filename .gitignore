@@ -1,0 +1,16 @@
+# .gitignore
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+database.db
+
+# виртуальное окружение
+.venv/
+env/
+venv/
+
+# IDE
+.idea/
+.vscode/

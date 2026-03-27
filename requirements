@@ -1,0 +1,6 @@
+aiogram
+fastapi
+uvicorn
+sqlalchemy
+jinja2
+python-multipart

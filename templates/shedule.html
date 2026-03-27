@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Расписание</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 0 auto; }
+    .event { border: 1px solid #ccc; padding: 8px; margin: 8px 0; }
+    .event-header { display: flex; justify-content: space-between; }
+  </style>
+</head>
+<body>
+  <h1>Расписание для {{ user.first_name or user.username }}</h1>
+
+  <h2>Создать событие</h2>
+  <form action="/events/create" method="post">
+    <input type="hidden" name="tg_id" value="{{ user.tg_id }}">
+    <div>
+      <label>Название:</label>
+      <input type="text" name="title" required>
+    </div>
+    <div>
+      <label>Описание:</label>
+      <textarea name="description"></textarea>
+    </div>
+    <div>
+      <label>Дата:</label>
+      <input type="date" name="date" required>
+    </div>
+    <div>
+      <label>Время:</label>
+      <input type="time" name="time" required>
+    </div>
+    <button type="submit">Создать</button>
+  </form>
+
+  <h2>События</h2>
+  {% for ev in events %}
+    <div class="event">
+      <div class="event-header">
+        <strong>{{ ev.title }}</strong>
+        <span>{{ ev.datetime.strftime("%d.%m.%Y %H:%M") }}</span>
+      </div>
+      <p>{{ ev.description }}</p>
+      <p><em>Создатель ID: {{ ev.owner_id }}</em></p>
+
+      <p>
+        Участники:
+        {% set parts = participants_map.get(ev.id, []) %}
+        {% if parts %}
+          {% for p in parts %}
+            {{ p.user_id }}{% if not loop.last %}, {% endif %}
+          {% endfor %}
+        {% else %}
+          никого
+        {% endif %}
+      </p>
+
+      <form action="/events/{{ ev.id }}/join" method="post" style="display:inline;">
+        <input type="hidden" name="tg_id" value="{{ user.tg_id }}">
+        <button type="submit">Я буду</button>
+      </form>
+
+      <form action="/events/{{ ev.id }}/leave" method="post" style="display:inline;">
+        <input type="hidden" name="tg_id" value="{{ user.tg_id }}">
+        <button type="submit">Не пойду</button>
+      </form>
+    </div>
+  {% endfor %}
+</body>
+</html>
