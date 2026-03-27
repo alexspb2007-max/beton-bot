@@ -156,7 +156,7 @@
     for (let i=firstDay-1; i>=0; i--) {
       const cell = document.createElement('div');
       cell.className = 'day-cell other-month';
-      cell.innerHTML = `<div class="day-number">${daysInPrevMonth-i}</div>`;
+      cell.innerHTML = '<div class="day-number">'+(daysInPrevMonth-i)+'</div>';
       grid.appendChild(cell);
     }
 
@@ -165,25 +165,24 @@
       const cell = document.createElement('div');
       cell.className = 'day-cell'+(dateStr===todayStr?' today':'');
       const dayEvents = events.filter(e=>e.date===dateStr);
-      let html = `<div class="day-number">${d}</div>`;
-      dayEvents.forEach(ev => {
-        html += `<div class="event-chip" onclick="openDetail(event,${ev.id})">${ev.time} ${ev.title}</div>`;
+      let html = '<div class="day-number">'+d+'</div>';
+      dayEvents.forEach(function(ev) {
+        html += '<div class="event-chip" onclick="openDetail(event,'+ev.id+')">'+ev.time+' '+ev.title+'</div>';
         if (ev.participantNames && ev.participantNames.length > 0) {
-          html += `<div class="participant-names">👤 ${ev.participantNames.join(', ')}</div>`;
+          html += '<div class="participant-names">👤 '+ev.participantNames.join(', ')+'</div>';
         }
       });
       cell.innerHTML = html;
-      cell.addEventListener('click', ()=>openCreate(dateStr));
+      cell.addEventListener('click', function(){ openCreate(dateStr); });
       grid.appendChild(cell);
     }
 
     const totalCells = firstDay+daysInMonth;
-    const remaining = totalCells%7===0 ? 0 : 7-(total:
-  Cells%7);
+    const remaining = totalCells%7===0 ? 0 : 7-(totalCells%7);
     for (let d=1; d<=remaining; d++) {
       const cell = document.createElement('div');
       cell.className = 'day-cell other-month';
-      cell.innerHTML = `<div class="day-number">${d}</div>`;
+      cell.innerHTML = '<div class="day-number">'+d+'</div>';
       grid.appendChild(cell);
     }
   }
@@ -199,7 +198,7 @@
 
   function openDetail(e, eventId) {
     e.stopPropagation();
-    const ev = events.find(x=>x.id===eventId);
+    const ev = events.find(function(x){ return x.id===eventId; });
     if (!ev) return;
     document.getElementById('detail-title').textContent = ev.title;
     document.getElementById('detail-time').textContent = ev.date+' в '+ev.time;
@@ -208,9 +207,9 @@
       ? '👤 Идут: '+ev.participantNames.join(', ')
       : 'Пока никто не отметился';
     document.getElementById('detail-participants').textContent = names;
-    document.getElementById('join-form').action = `/events/${eventId}/join`;
-    document.getElementById('leave-form').action = `/events/${eventId}/leave`;
-    document.getElementById('delete-form').action = `/events/${eventId}/delete`;
+    document.getElementById('join-form').action = '/events/'+eventId+'/join';
+    document.getElementById('leave-form').action = '/events/'+eventId+'/leave';
+    document.getElementById('delete-form').action = '/events/'+eventId+'/delete';
     document.getElementById('detail-modal').classList.add('active');
   }
 
@@ -227,5 +226,7 @@
 
   renderCalendar();
 </script>
+</body>
+</html>
 </body>
 </html>
