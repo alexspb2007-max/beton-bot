@@ -3,7 +3,7 @@ from typing import Optional
 
 from fastapi import FastAPI, Depends, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.staticfiles import StaticFiles
+#from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
@@ -12,7 +12,7 @@ from models import init_db, get_db, User, Event, EventParticipant
 app = FastAPI()
 init_db()
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+#app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 
