@@ -6,17 +6,17 @@
   <title>Расписание</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Google Sans', Roboto, sans-serif; background: #f6f8fc; color: #202124; }
+    body { font-family: Roboto, sans-serif; background: #f6f8fc; color: #202124; }
     .header { display: flex; align-items: center; padding: 10px 20px; background: #fff; border-bottom: 1px solid #dadce0; gap: 16px; position: sticky; top: 0; z-index: 100; }
-    .header h1 { font-size: 22px; font-weight: 400; color: #202124; }
+    .header h1 { font-size: 22px; font-weight: 400; }
     .month-nav { display: flex; align-items: center; gap: 8px; }
-    .nav-btn { background: none; border: none; cursor: pointer; font-size: 20px; color: #5f6368; padding: 4px 8px; border-radius: 50%; transition: background 0.2s; }
+    .nav-btn { background: none; border: none; cursor: pointer; font-size: 22px; color: #5f6368; padding: 4px 8px; border-radius: 50%; transition: background 0.2s; }
     .nav-btn:hover { background: #f1f3f4; }
     .today-btn { background: none; border: 1px solid #dadce0; border-radius: 4px; padding: 6px 16px; cursor: pointer; font-size: 14px; color: #3c4043; transition: background 0.2s; }
     .today-btn:hover { background: #f1f3f4; }
     .user-badge { margin-left: auto; background: #e8f0fe; color: #1a73e8; padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: 500; }
     .calendar-wrapper { padding: 16px; }
-    .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 12px; color: #70757a; margin-bottom: 4px; padding: 0 4px; }
+    .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 12px; color: #70757a; margin-bottom: 4px; }
     .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
     .day-cell { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; min-height: 110px; padding: 6px; cursor: pointer; transition: box-shadow 0.2s, border-color 0.2s; }
     .day-cell:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.12); border-color: #1a73e8; }
@@ -25,10 +25,11 @@
     .day-number { font-size: 13px; font-weight: 500; margin-bottom: 4px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
     .event-chip { background: #1a73e8; color: #fff; border-radius: 4px; font-size: 11px; padding: 2px 6px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
     .event-chip:hover { background: #1557b0; }
+    .participant-names { font-size: 10px; color: #5f6368; margin-top: 1px; margin-bottom: 3px; padding-left: 2px; }
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; align-items: center; justify-content: center; }
     .modal-overlay.active { display: flex; }
     .modal { background: #fff; border-radius: 12px; padding: 28px; width: 420px; max-width: 95vw; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
-    .modal h2 { font-size: 20px; font-weight: 500; margin-bottom: 20px; color: #202124; }
+    .modal h2 { font-size: 20px; font-weight: 500; margin-bottom: 20px; }
     .modal label { display: block; font-size: 13px; color: #5f6368; margin-bottom: 4px; margin-top: 14px; }
     .modal input, .modal textarea { width: 100%; border: 1px solid #dadce0; border-radius: 6px; padding: 10px 12px; font-size: 14px; outline: none; transition: border 0.2s; }
     .modal input:focus, .modal textarea:focus { border-color: #1a73e8; }
@@ -38,21 +39,23 @@
     .btn-cancel:hover { background: #e8f0fe; }
     .btn-save { background: #1a73e8; color: #fff; border: none; border-radius: 4px; padding: 8px 20px; font-size: 14px; font-weight: 500; cursor: pointer; }
     .btn-save:hover { background: #1557b0; }
-    .detail-modal { background: #fff; border-radius: 12px; padding: 28px; width: 380px; max-width: 95vw; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
-    .detail-modal h2 { font-size: 20px; font-weight: 500; margin-bottom: 8px; }
+    .detail-modal { background: #fff; border-radius: 12px; padding: 28px; width: 400px; max-width: 95vw; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+    .detail-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .detail-modal h2 { font-size: 20px; font-weight: 500; padding-right: 12px; }
+    .btn-close-detail { background: none; border: none; font-size: 20px; cursor: pointer; color: #5f6368; }
     .detail-time { font-size: 13px; color: #5f6368; margin-bottom: 12px; }
     .detail-desc { font-size: 14px; color: #3c4043; margin-bottom: 16px; min-height: 20px; }
     .participants-list { font-size: 13px; color: #5f6368; margin-bottom: 16px; }
-    .attend-btns { display: flex; gap: 10px; }
+    .attend-btns { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
     .btn-going { background: #e6f4ea; color: #137333; border: none; border-radius: 4px; padding: 8px 16px; font-size: 14px; font-weight: 500; cursor: pointer; }
     .btn-going:hover { background: #ceead6; }
     .btn-notgoing { background: #fce8e6; color: #c5221f; border: none; border-radius: 4px; padding: 8px 16px; font-size: 14px; font-weight: 500; cursor: pointer; }
     .btn-notgoing:hover { background: #f5c6c5; }
-    .btn-close-detail { float: right; background: none; border: none; font-size: 20px; cursor: pointer; color: #5f6368; }
+    .btn-delete { background: none; color: #c5221f; border: 1px solid #c5221f; border-radius: 4px; padding: 8px 16px; font-size: 14px; font-weight: 500; cursor: pointer; margin-left: auto; }
+    .btn-delete:hover { background: #fce8e6; }
   </style>
 </head>
 <body>
-
 <div class="header">
   <div class="month-nav">
     <button class="today-btn" onclick="goToday()">Сегодня</button>
@@ -71,7 +74,6 @@
   <div class="calendar-grid" id="calendar-grid"></div>
 </div>
 
-<!-- Модалка создания -->
 <div class="modal-overlay" id="create-modal">
   <div class="modal">
     <h2>Новое событие</h2>
@@ -92,11 +94,12 @@
   </div>
 </div>
 
-<!-- Модалка деталей -->
 <div class="modal-overlay" id="detail-modal">
   <div class="detail-modal">
-    <button class="btn-close-detail" onclick="closeDetail()">&#x2715;</button>
-    <h2 id="detail-title"></h2>
+    <div class="detail-header">
+      <h2 id="detail-title"></h2>
+      <button class="btn-close-detail" onclick="closeDetail()">&#x2715;</button>
+    </div>
     <div class="detail-time" id="detail-time"></div>
     <div class="detail-desc" id="detail-desc"></div>
     <div class="participants-list" id="detail-participants"></div>
@@ -108,6 +111,10 @@
       <form id="leave-form" method="post" style="display:inline">
         <input type="hidden" name="tg_id" value="{{ user.tg_id }}">
         <button type="submit" class="btn-notgoing">Не пойду</button>
+      </form>
+      <form id="delete-form" method="post" style="display:inline">
+        <input type="hidden" name="tg_id" value="{{ user.tg_id }}">
+        <button type="submit" class="btn-delete" onclick="return confirm('Удалить событие?')">Удалить</button>
       </form>
     </div>
   </div>
@@ -123,60 +130,57 @@
       date: "{{ ev.datetime.strftime('%Y-%m-%d') }}",
       time: "{{ ev.datetime.strftime('%H:%M') }}",
       participants: {{ participants_map[ev.id] | length }},
+      participantNames: {{ participants_names_map[ev.id] | tojson }},
     },
     {% endfor %}
   ];
 
   let currentDate = new Date();
-
   function goToday() { currentDate = new Date(); renderCalendar(); }
-  function prevMonth() { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); }
-  function nextMonth() { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); }
+  function prevMonth() { currentDate.setMonth(currentDate.getMonth()-1); renderCalendar(); }
+  function nextMonth() { currentDate.setMonth(currentDate.getMonth()+1); renderCalendar(); }
 
   function renderCalendar() {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     const months = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
-    document.getElementById('month-title').textContent = `${months[month]} ${year}`;
-
+    document.getElementById('month-title').textContent = months[month]+' '+year;
     const grid = document.getElementById('calendar-grid');
     grid.innerHTML = '';
-
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const daysInPrevMonth = new Date(year, month, 0).getDate();
-
+    const firstDay = new Date(year,month,1).getDay();
+    const daysInMonth = new Date(year,month+1,0).getDate();
+    const daysInPrevMonth = new Date(year,month,0).getDate();
     const today = new Date();
-    const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+    const todayStr = today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
 
-    // Предыдущий месяц
-    for (let i = firstDay - 1; i >= 0; i--) {
+    for (let i=firstDay-1; i>=0; i--) {
       const cell = document.createElement('div');
       cell.className = 'day-cell other-month';
-      cell.innerHTML = `<div class="day-number">${daysInPrevMonth - i}</div>`;
+      cell.innerHTML = `<div class="day-number">${daysInPrevMonth-i}</div>`;
       grid.appendChild(cell);
     }
 
-    // Текущий месяц
-    for (let d = 1; d <= daysInMonth; d++) {
-      const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    for (let d=1; d<=daysInMonth; d++) {
+      const dateStr = year+'-'+String(month+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
       const cell = document.createElement('div');
-      cell.className = 'day-cell' + (dateStr === todayStr ? ' today' : '');
-
-      const dayEvents = events.filter(e => e.date === dateStr);
+      cell.className = 'day-cell'+(dateStr===todayStr?' today':'');
+      const dayEvents = events.filter(e=>e.date===dateStr);
       let html = `<div class="day-number">${d}</div>`;
       dayEvents.forEach(ev => {
-        html += `<div class="event-chip" onclick="openDetail(event, ${ev.id})">${ev.time} ${ev.title}</div>`;
+        html += `<div class="event-chip" onclick="openDetail(event,${ev.id})">${ev.time} ${ev.title}</div>`;
+        if (ev.participantNames && ev.participantNames.length > 0) {
+          html += `<div class="participant-names">👤 ${ev.participantNames.join(', ')}</div>`;
+        }
       });
       cell.innerHTML = html;
-      cell.addEventListener('click', () => openCreate(dateStr));
+      cell.addEventListener('click', ()=>openCreate(dateStr));
       grid.appendChild(cell);
     }
 
-    // Следующий месяц
-    const totalCells = firstDay + daysInMonth;
-    const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
-    for (let d = 1; d <= remaining; d++) {
+    const totalCells = firstDay+daysInMonth;
+    const remaining = totalCells%7===0 ? 0 : 7-(total:
+  Cells%7);
+    for (let d=1; d<=remaining; d++) {
       const cell = document.createElement('div');
       cell.className = 'day-cell other-month';
       cell.innerHTML = `<div class="day-number">${d}</div>`;
@@ -195,14 +199,18 @@
 
   function openDetail(e, eventId) {
     e.stopPropagation();
-    const ev = events.find(x => x.id === eventId);
+    const ev = events.find(x=>x.id===eventId);
     if (!ev) return;
     document.getElementById('detail-title').textContent = ev.title;
-    document.getElementById('detail-time').textContent = ev.date + ' ' + ev.time;
+    document.getElementById('detail-time').textContent = ev.date+' в '+ev.time;
     document.getElementById('detail-desc').textContent = ev.description;
-    document.getElementById('detail-participants').textContent = `Участников: ${ev.participants}`;
+    const names = ev.participantNames && ev.participantNames.length > 0
+      ? '👤 Идут: '+ev.participantNames.join(', ')
+      : 'Пока никто не отметился';
+    document.getElementById('detail-participants').textContent = names;
     document.getElementById('join-form').action = `/events/${eventId}/join`;
     document.getElementById('leave-form').action = `/events/${eventId}/leave`;
+    document.getElementById('delete-form').action = `/events/${eventId}/delete`;
     document.getElementById('detail-modal').classList.add('active');
   }
 
@@ -210,13 +218,11 @@
     document.getElementById('detail-modal').classList.remove('active');
   }
 
-    // Закрытие по клику на фон
   document.getElementById('create-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeCreate();
+    if (e.target===this) closeCreate();
   });
-
   document.getElementById('detail-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeDetail();
+    if (e.target===this) closeDetail();
   });
 
   renderCalendar();
