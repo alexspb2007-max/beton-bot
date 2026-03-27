@@ -1,12 +1,21 @@
+import os
 from datetime import datetime, timezone
 from sqlalchemy import (
     create_engine, Column, Integer, String, DateTime, ForeignKey, Text
 )
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 
-DATABASE_URL = "sqlite:///./database.db"
+# External URL — для локального бота
+# Internal URL — для Render Web Service (через переменную окружения)
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql://beton_db_wcnd_user:YtIJ4poaTVGtXzONVCC8yHL3zRWkv3EE@dpg-d73e4nv5r7bs73fj42vg-a.virginia-postgres.render.com/beton_db_wcnd"
+)
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
