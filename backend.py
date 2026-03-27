@@ -38,9 +38,9 @@ def schedule(request: Request, tg_id: int, db: Session = Depends(get_db)):
         participants_map[ev.id] = parts
 
     return templates.TemplateResponse(
-        "schedule.html",
-        {
-            "request": request,
+        request=request,
+        name="schedule.html",
+        context={
             "user": user,
             "events": events,
             "participants_map": participants_map,
